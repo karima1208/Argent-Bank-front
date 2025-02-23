@@ -21,9 +21,7 @@ const Login = () => {
         </div>
        
         <a href="./user.html" class="sign-in-button">Sign In</a>
-       
-         <button class="sign-in-button">Sign In</button> 
-       
+      
       </form>
     </section>
   </main>
