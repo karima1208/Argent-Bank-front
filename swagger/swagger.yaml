@@ -116,3 +116,285 @@ paths:
           description: Champs invalides
         "500":
           description: Erreur serveur interne
+
+  /accounts:
+    get:
+      security:
+        - Bearer: []
+      tags:
+        - Module Transactions
+      summary: Récupérer tous les comptes
+      description: Récupérer tous les comptes de l'utilisateur authentifié
+      parameters:
+        - in: header
+          name: Authorization
+          description: Joindre le token JWT Bearer
+          required: true
+          type: string
+      produces:
+        - application/json
+      responses:
+        "200":
+          description: Comptes récupérés avec succès
+          schema:
+            $ref: "#/definitions/AllAccounts"
+        "400":
+          description: Requête invalide
+        "500":
+          description: Erreur serveur interne
+
+  /accounts/{accountId}/transactions:
+    get:
+      security:
+        - Bearer: []
+      tags:
+        - Module Transactions
+      summary: Transactions d'un compte utilisateur
+      description: API pour récupérer les transactions d'un compte utilisateur
+      parameters:
+        - in: header
+          name: Authorization
+          description: Joindre le token JWT Bearer
+          required: true
+          type: string
+        - in: path
+          name: accountId
+          description: ID du compte
+          required: true
+          type: string
+        - in: body
+          name: body
+          description: Rechercher des transactions par mois
+          required: true
+          schema:
+            $ref: "#/definitions/Month"
+      produces:
+        - application/json
+      responses:
+        "200":
+          description: Transactions récupérées avec succès
+          schema:
+            $ref: "#/definitions/AllTransactions"
+        "400":
+          description: Champs invalides
+        "500":
+          description: Erreur serveur interne
+
+  /transactions/{transactionId}/description:
+    post:
+      security:
+        - Bearer: []
+      tags:
+        - Module Transactions
+      summary: Ajouter une description à une transaction
+      description: API pour ajouter ou modifier la description d'une transaction
+      parameters:
+        - in: header
+          name: Authorization
+          description: Joindre le token JWT Bearer
+          required: true
+          type: string
+        - in: path
+          name: transactionId
+          description: ID de la transaction
+          required: true
+          type: string
+        - in: body
+          name: body
+          description: Contenu de la description
+          required: true
+          schema:
+            $ref: "#/definitions/UpdateTransaction"
+      produces:
+        - application/json
+      responses:
+        "200":
+          description: Description ajoutée avec succès
+          schema:
+            $ref: "#/definitions/ApiTransactionResponse"
+        "400":
+          description: Champs invalides
+        "500":
+          description: Erreur serveur interne
+
+  /transactions/{transactionId}:
+    get:
+      security:
+        - Bearer: []
+      tags:
+        - Module Transactions
+      summary: Détails d'une transaction utilisateur
+      description: API pour récupérer les détails d'une transaction utilisateur
+      parameters:
+        - in: header
+          name: Authorization
+          description: Joindre le token JWT Bearer
+          required: true
+          type: string
+        - in: path
+          name: transactionId
+          description: ID de la transaction
+          required: true
+          type: string
+      responses:
+        "200":
+          description: Transaction récupérée avec succès
+          schema:
+            $ref: "#/definitions/ApiTransactionResponse"
+        "400":
+          description: Champs invalides
+        "500":
+          description: Erreur serveur interne
+
+    patch:
+      security:
+        - Bearer: []
+      tags:
+        - Module Transactions
+      summary: Mettre à jour une transaction
+      description: API pour mettre à jour les informations d'une transaction utilisateur
+      parameters:
+        - in: header
+          name: Authorization
+          description: Joindre le token JWT Bearer
+          required: true
+          type: string
+        - in: path
+          name: transactionId
+          description: ID de la transaction
+          required: true
+          type: string
+        - in: body
+          name: body
+          description: Champs de la transaction à mettre à jour
+          required: true
+          schema:
+            $ref: "#/definitions/UpdateTransaction"
+      produces:
+        - application/json
+      responses:
+        "200":
+          description: Transaction mise à jour avec succès
+          schema:
+            $ref: "#/definitions/ApiTransactionResponse"
+        "400":
+          description: Champs invalides
+        "500":
+          description: Erreur serveur interne
+
+securityDefinitions:
+  Bearer:
+    type: apiKey
+    name: Authorization
+    in: header
+
+definitions:
+  User:
+    type: object
+    properties:
+      email:
+        type: string
+        description: Adresse e-mail de l'utilisateur
+      password:
+        type: string
+        description: Mot de passe de l'utilisateur
+      firstName:
+        type: string
+        description: Prénom de l'utilisateur
+      lastName:
+        type: string
+        description: Nom de famille de l'utilisateur
+
+  Login:
+    type: object
+    properties:
+      email:
+        type: string
+        description: Adresse e-mail de l'utilisateur
+      password:
+        type: string
+        description: Mot de passe de l'utilisateur
+
+  ApiResponse:
+    type: object
+    properties:
+      status:
+        type: integer
+      message:
+        type: string
+      body:
+        type: object
+        properties:
+          id:
+            type: string
+          email:
+            type: string
+
+  LoginResponse:
+    type: object
+    properties:
+      token:
+        type: string
+
+  UserProfile:
+    type: object
+    properties:
+      firstName:
+        type: string
+        description: Prénom
+      lastName:
+        type: string
+        description: Nom de famille
+
+  AllAccounts:
+    type: array
+    items:
+      $ref: "#/definitions/ApiAccountResponse"
+
+  ApiAccountResponse:
+    type: object
+    properties:
+      name:
+        type: string
+        description: Nom du compte
+      amount:
+        type: integer
+        description: Montant
+      description:
+        type: string
+        description: Description du compte
+
+  AllTransactions:
+    type: array
+    items:
+      $ref: "#/definitions/ApiTransactionResponse"
+
+  ApiTransactionResponse:
+    type: object
+    properties:
+      date:
+        type: string
+        description: Date de la transaction
+      amount:
+        type: integer
+        description: Montant de la transaction
+      description:
+        type: string
+        description: Description de la transaction
+      transactionType:
+        type: string
+        description: Type de transaction
+
+  UpdateTransaction:
+    type: object
+    properties:
+      description:
+        type: string
+        description: Nouvelle description saisie par l'utilisateur
+
+  Month:
+    type: object
+    properties:
+      month:
+        type: number
+        description: Mois actif (numérique)
