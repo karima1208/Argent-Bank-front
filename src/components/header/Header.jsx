@@ -25,12 +25,12 @@ const Header = () => {
         <div>
           {token ? (
             <div className="headerButtons">
-              <Link class="main-nav-item" to="/user">
-                <i class="fa fa-user-circle"></i>
+              <Link className="main-nav-item" to="/user">
+                <i className="fa fa-user-circle"></i>
                 {user.firstName}
               </Link>
-              <div class="main-nav-item"  onClick={onLogout}>
-                <i class="fa fa-sign-out"></i>
+              <div className="main-nav-item"  onClick={onLogout}>
+                <i className="fa fa-sign-out"></i>
                 Sign Out
               </div>
             </div>
